@@ -12,7 +12,8 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.19.1",
-    "babel-polyfill": "^6.26.0"
+    "babel-polyfill": "^6.26.0",
+    "fractional": "^1.0.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
