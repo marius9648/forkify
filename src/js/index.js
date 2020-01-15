@@ -4,7 +4,9 @@ import List from './models/List'
 import * as searchView from './views/searchView';
 import * as recipeView from './views/recipeView';
 import * as listView from './views/listView';
+import * as likesView from './views/likesView';
 import {elements, renderLoader, clearLoader} from './views/base';
+import Likes from './models/Likes';
 
 
 
@@ -85,7 +87,10 @@ const controlRecipe = async () => {
             
             // Render the recipe
             clearLoader();
-            recipeView.renderRecipe(state.recipe);
+            recipeView.renderRecipe(
+                state.recipe,
+                state.likes.isLiked(id)
+                );
 
             
         } catch(error) {
@@ -127,7 +132,41 @@ elements.shopping.addEventListener('click', e => {
         state.list.updateCount(id, val);
     }
 });
+//testing
+if(!state.likes) state.likes = new Likes();
 
+// LIKES CONTROLLER
+const controlLike = () => {
+    
+    const currentID = state.recipe.id;
+    
+    // User HAS NOT yet liked the current recipe
+    if(!state.likes.isLiked(currentID)) {
+        // Add like to the state
+        const newLike = state.likes.addLike(
+            state.recipe.id, 
+            state.recipe.title, 
+            state.recipe.author,
+            state.recipe.img
+            );
+        // Toggle the like button
+        likesView.toggleLikeBtn(true);
+
+        // Add like to UI list
+        likesView.renderLike(newLike);
+    // User HAS liked the current recipe
+    } else {
+        // Remove like from the state
+        state.likes.deleteLike(currentID);
+        // Toggle the like button
+        likesView.toggleLikeBtn(false);
+
+        // Remove like to UI list
+        console.log(state.likes);
+        
+    }
+    
+}
 
 
 
@@ -145,6 +184,9 @@ elements.recipe.addEventListener('click', e => {
         recipeView.updateServingsIngredients(state.recipe);
     } else if (e.target.matches('.recipe__btn--add, .recipe__btn--add *')) {
         controlList();
+    } else if (e.target.matches('.recipe__love, .recipe__love *')) {
+        // Like controller
+        controlLike();
     }
 });
 
