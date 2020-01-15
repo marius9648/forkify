@@ -17,7 +17,6 @@ import Likes from './models/Likes';
  * - Liked recipes
 */
 const state = {};
-window.state = state;
 
 // SEARCH CONTROLLER
 const controlSearch = async () => {
@@ -133,7 +132,7 @@ elements.shopping.addEventListener('click', e => {
     }
 });
 //testing
-if(!state.likes) state.likes = new Likes();
+
 
 // LIKES CONTROLLER
 const controlLike = () => {
@@ -162,13 +161,24 @@ const controlLike = () => {
         likesView.toggleLikeBtn(false);
 
         // Remove like to UI list
-        console.log(state.likes);
+        likesView.deleteItem(currentID);
         
     }
+};
+
+// Restore liked recipes on page load
+
+window.addEventListener('load', () => {
+    state.likes = new Likes();
+    // Restore likes
+    state.likes.readStorage();
     
-}
+    // Toggle like menu button
+    likesView.toggleLikeMenu(state.likes.getNumLikes());
 
-
+    // Render the existing likes
+    state.likes.likes.forEach(like => likes.likesView.renderLike(like));
+});
 
 // Handling recipe button clicks 
 elements.recipe.addEventListener('click', e => {
@@ -190,4 +200,3 @@ elements.recipe.addEventListener('click', e => {
     }
 });
 
-window.l = new List();
